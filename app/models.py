@@ -1,5 +1,15 @@
 # coding: utf-8
-from sqlalchemy import Column, Date, Float, ForeignKey, Integer, Text, text, Boolean
+from sqlalchemy import (
+    Boolean,
+    Column,
+    Date,
+    Float,
+    ForeignKey,
+    Index,
+    Integer,
+    Text,
+    text,
+)
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship  # noqa:F401
 from sqlalchemy_serializer import SerializerMixin
@@ -8,45 +18,59 @@ from app.db.base_class import Base
 
 metadata = Base.metadata
 
+
 class Capacity(Base, SerializerMixin):
     __tablename__ = "capacity"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
 class SponsorType(Base, SerializerMixin):
     __tablename__ = "sponsor_type"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
 class DevelopmentType(Base, SerializerMixin):
     __tablename__ = "development_type"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
 class DevelopmentModel(Base, SerializerMixin):
     __tablename__ = "development_model"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
 class Project(Base, SerializerMixin):
     __tablename__ = "project"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
+    type = Column(Text)
     name = Column(Text)
     description = Column(Text)
     size = Column(Float)
     investment = Column(Float)
     country_id = Column(Text)
+    sector_industry_id = Column(Text)
+    sector_group_id = Column(Text)
+    sector_division_id = Column(Text)
     sector_id = Column(Text)
-    segment = Column(Text)
     technology = Column(Text)
     status = Column(Text)
     commencement_date = Column(Date)
@@ -64,9 +88,7 @@ class Project(Base, SerializerMixin):
     current_activities = Column(Text)
     next_activities = Column(Text)
     outstanding_activities = Column(Text)
-    status_id = Column(
-        ForeignKey("status.id", ondelete="CASCADE", onupdate="CASCADE")
-    )
+    status_id = Column(ForeignKey("status.id", ondelete="CASCADE", onupdate="CASCADE"))
     sponsor_type_id = Column(
         ForeignKey("sponsor_type.id", ondelete="CASCADE", onupdate="CASCADE")
     )
@@ -75,9 +97,7 @@ class Project(Base, SerializerMixin):
     development_type_id = Column(
         ForeignKey("development_type.id", ondelete="CASCADE", onupdate="CASCADE")
     )
-    development_model_id = Column(
-        ForeignKey("development_model.id", ondelete="CASCADE", onupdate="CASCADE")
-    )
+    development_model = Column(Text)
     percentage_public = Column(Float)
     percentage_private = Column(Float)
     location = Column(Text)
@@ -96,6 +116,14 @@ class Project(Base, SerializerMixin):
     related_projects = Column(Text)
     strategy = Column(Text)
     alliances = Column(Text)
+    objectives = Column(Text)
+    location_area = Column(Text)
+    milestones = Column(Text)
+    impacts = Column(Text)
+    related_projects = Column(Text)
+    award_criteria = Column(Text)
+    comparative_advantage = Column(Text)
+    economic_contributions = Column(Text)
 
 
 class ProjectRegion(Base, SerializerMixin):
@@ -121,14 +149,18 @@ class ProjectCountry(Base, SerializerMixin):
 class Status(Base, SerializerMixin):
     __tablename__ = "status"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
 class Type(Base, SerializerMixin):
     __tablename__ = "ptype"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
@@ -139,43 +171,56 @@ class ProjectType(Base, SerializerMixin):
     project_id = Column(
         ForeignKey("project.id", ondelete="CASCADE", onupdate="CASCADE")
     )
-    type_id = Column(
-        ForeignKey("ptype.id", ondelete="CASCADE", onupdate="CASCADE")
-    )
+    type_id = Column(ForeignKey("ptype.id", ondelete="CASCADE", onupdate="CASCADE"))
 
 
 class EnergyResource(Base, SerializerMixin):
     __tablename__ = "energy_resource"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
-class HydropowerType(Base, SerializerMixin):
-    __tablename__ = "hydropower_type"
+class TechnologyType(Base, SerializerMixin):
+    __tablename__ = "technology_type"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
+    technology_id = Column(
+        ForeignKey("technology.id", ondelete="CASCADE", onupdate="CASCADE")
+    )
     name = Column(Text)
+
+    technology = relationship("Technology")
 
 
 class Technology(Base, SerializerMixin):
     __tablename__ = "technology"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
 class OffTaker(Base, SerializerMixin):
     __tablename__ = "off_taker"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
 class WaterService(Base, SerializerMixin):
     __tablename__ = "water_service"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
@@ -183,9 +228,7 @@ class PowerWaterService(Base, SerializerMixin):
     __tablename__ = "power_water_service"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    power_id = Column(
-        ForeignKey("power.id", ondelete="CASCADE", onupdate="CASCADE")
-    )
+    power_id = Column(ForeignKey("power.id", ondelete="CASCADE", onupdate="CASCADE"))
     water_service_id = Column(
         ForeignKey("water_service.id", ondelete="CASCADE", onupdate="CASCADE")
     )
@@ -195,7 +238,9 @@ class PowerWaterService(Base, SerializerMixin):
 class PowerCustomer(Base, SerializerMixin):
     __tablename__ = "power_customer"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
@@ -203,9 +248,7 @@ class PowerPowerCustomer(Base, SerializerMixin):
     __tablename__ = "power_power_customer"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    power_id = Column(
-        ForeignKey("power.id", ondelete="CASCADE", onupdate="CASCADE")
-    )
+    power_id = Column(ForeignKey("power.id", ondelete="CASCADE", onupdate="CASCADE"))
     power_customer_id = Column(
         ForeignKey("power_customer.id", ondelete="CASCADE", onupdate="CASCADE")
     )
@@ -216,9 +259,7 @@ class PowerEnergyResource(Base, SerializerMixin):
     __tablename__ = "power_energy_resource"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    power_id = Column(
-        ForeignKey("power.id", ondelete="CASCADE", onupdate="CASCADE")
-    )
+    power_id = Column(ForeignKey("power.id", ondelete="CASCADE", onupdate="CASCADE"))
     energy_resource_id = Column(
         ForeignKey("energy_resource.id", ondelete="CASCADE", onupdate="CASCADE")
     )
@@ -228,7 +269,9 @@ class PowerEnergyResource(Base, SerializerMixin):
 class PowerComponent(Base, SerializerMixin):
     __tablename__ = "power_component"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
     northings = Column(Text)
     eastings = Column(Text)
@@ -237,7 +280,9 @@ class PowerComponent(Base, SerializerMixin):
 class PPAstatus(Base, SerializerMixin):
     __tablename__ = "ppa_status"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
 
 
@@ -251,11 +296,14 @@ class Unit(Base, SerializerMixin):
 class Power(Base, SerializerMixin):
     __tablename__ = "power"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     developer = Column(Text)
     notice = Column(Text)
     picture_source = Column(Text)
     sponsor_id = Column(UUID(as_uuid=True))
+    sponsor_name = Column(Text)
     full_name = Column(Text)
     short_name = Column(Text)
     capacity_id = Column(
@@ -263,23 +311,20 @@ class Power(Base, SerializerMixin):
     )
     size = Column(Float)
     description = Column(Text)
-    sector_id = Column(Text)
     energy_resource_id = Column(
         ForeignKey("energy_resource.id", ondelete="CASCADE", onupdate="CASCADE")
     )
     technology_id = Column(
         ForeignKey("technology.id", ondelete="CASCADE", onupdate="CASCADE")
     )
-    hydropower_type_id = Column(
-        ForeignKey("hydropower_type.id", ondelete="CASCADE", onupdate="CASCADE")
+    technology_type_id = Column(
+        ForeignKey("technology_type.id", ondelete="CASCADE", onupdate="CASCADE")
     )
     other_technologies = Column(Text)
     waterbody_names = Column(Text)
     scheme = Column(Text)
     design_components = Column(Text)
-    unit_id = Column(
-        ForeignKey("unit.id", ondelete="CASCADE", onupdate="CASCADE")
-    )
+    unit_id = Column(ForeignKey("unit.id", ondelete="CASCADE", onupdate="CASCADE"))
     average_length = Column(Float)
     average_width = Column(Float)
     off_taker_id = Column(
@@ -343,12 +388,15 @@ class ProjectData(Base, SerializerMixin):
     substation_voltage = Column(Float)
 
 
-
-
 class ProjectDocument(Base, SerializerMixin):
     __tablename__ = "project_document"
+    __table_args__ = (
+        Index("project_document_unique", "project_id", "document_type", unique=True),
+    )
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     project_id = Column(
         ForeignKey("project.id", ondelete="CASCADE", onupdate="CASCADE")
     )
@@ -392,7 +440,9 @@ class SponsorSectorIndustry(Base, SerializerMixin):
 class SponsorDocument(Base, SerializerMixin):
     __tablename__ = "sponsor_document"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     sponsor_id = Column(
         ForeignKey("sponsor.id", ondelete="CASCADE", onupdate="CASCADE")
     )
@@ -403,7 +453,9 @@ class SponsorDocument(Base, SerializerMixin):
 class Sponsor(Base, SerializerMixin):
     __tablename__ = "sponsor"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()"))
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
     name = Column(Text)
     other_sponsors = Column(Text)
     shareholders = Column(Text)
@@ -511,3 +563,30 @@ class ProjectInvestment(Base, SerializerMixin):
     current_lenders = Column(Text)
     prospective_lenders = Column(Text)
     loan_type = Column(Text)
+    other_loan_types = Column(Text)
+    other_loan_description = Column(Text)
+    loan_amount = Column(Float)
+    loan_mobilized = Column(Float)
+    loan_needing_mobilization = Column(Float)
+    proposed_grant_amount = Column(Text)
+    grant_providers = Column(Text)
+    prospective_grant_providers = Column(Text)
+    grant_types = Column(Text)
+    grant_amount = Column(Float)
+    grant_mobilized = Column(Float)
+    grant_needing_mobilization = Column(Float)
+    total_mobilized = Column(Float)
+    total_needing_mobilization = Column(Float)
+    date_financial_close = Column(Date)
+
+
+class ProjectPartner(Base, SerializerMixin):
+    __tablename__ = "project_partner"
+
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    equity_partners = Column(Text)
+    debt_partners = Column(Text)
+    tehcnical_advisors = Column(Text)
+    implementation_partners = Column(Text)
+    institutional_partners = Column(Text)
+    stakeholders = Column(Text)

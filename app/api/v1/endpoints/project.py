@@ -1,13 +1,14 @@
 from typing import Any
+from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.api import deps
-from app.core.logger import log  # noqa
+from app.core.logger import TimedRoute, log  # noqa
 
-router = APIRouter()
+router = APIRouter(route_class=TimedRoute)
 
 
 @router.post("/", response_model=schemas.ProjectResponse)
@@ -20,17 +21,18 @@ async def create_project(
     """
     try:
         project = crud.project.create(db=db, obj_in=project_in)
-    except Exception:
+    except Exception as e:
+        log.error(e, exc_info=True)
         raise HTTPException(
             status_code=400, detail="Project with this ID already exists"
         )
 
-    return project
+    return {"success": True, "data": project}
 
 
 @router.get("/{id}", response_model=schemas.ProjectResponse)
 async def get_project(
-    id: str,
+    id: UUID,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """Get project by ID."""
@@ -38,12 +40,12 @@ async def get_project(
     if not r:
         raise HTTPException(status_code=401, detail="Project not found")
 
-    return r
+    return {"success": True, "data": r}
 
 
 @router.put("/{id}", response_model=schemas.ProjectResponse)
 async def update_project(
-    id: str,
+    id: UUID,
     project_in: schemas.ProjectUpdate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
@@ -56,12 +58,12 @@ async def update_project(
 
     project = crud.project.update(db=db, db_obj=project, obj_in=project_in)
 
-    return project
+    return {"success": True, "data": project}
 
 
 @router.delete("/{id}", response_model=schemas.ProjectResponse)
 async def delete_project(
-    id: str,
+    id: UUID,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
@@ -73,7 +75,7 @@ async def delete_project(
 
     project = crud.project.remove(db=db, id=id)
 
-    return project
+    return {"success": True, "data": project}
 
 
 @router.get("/", response_model=schemas.ProjectListResponse)
@@ -85,4 +87,4 @@ async def list_projects(
     """
     rows = crud.project.get_multi(db, limit=1000)
 
-    return rows
+    return {"success": True, "data": rows}

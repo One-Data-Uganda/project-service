@@ -5,9 +5,9 @@ from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.api import deps
-from app.core.logger import log  # noqa
+from app.core.logger import TimedRoute, log  # noqa
 
-router = APIRouter()
+router = APIRouter(route_class=TimedRoute)
 
 
 @router.post("/", response_model=schemas.PowerResponse)
@@ -21,11 +21,9 @@ async def create_power(
     try:
         power = crud.power.create(db=db, obj_in=power_in)
     except Exception:
-        raise HTTPException(
-            status_code=400, detail="Power with this ID already exists"
-        )
+        raise HTTPException(status_code=400, detail="Power with this ID already exists")
 
-    return power
+    return {"success": True, "data": power}
 
 
 @router.get("/{id}", response_model=schemas.PowerResponse)
@@ -38,7 +36,7 @@ async def get_power(
     if not r:
         raise HTTPException(status_code=401, detail="Power not found")
 
-    return r
+    return {"success": True, "data": r}
 
 
 @router.put("/{id}", response_model=schemas.PowerResponse)
@@ -56,7 +54,7 @@ async def update_power(
 
     power = crud.power.update(db=db, db_obj=power, obj_in=power_in)
 
-    return power
+    return {"success": True, "data": power}
 
 
 @router.delete("/{id}", response_model=schemas.PowerResponse)
@@ -73,7 +71,7 @@ async def delete_power(
 
     power = crud.power.remove(db=db, id=id)
 
-    return power
+    return {"success": True, "data": power}
 
 
 @router.get("/", response_model=schemas.PowerListResponse)
@@ -85,4 +83,4 @@ async def list_powers(
     """
     rows = crud.power.get_multi(db, limit=1000)
 
-    return rows
+    return {"success": True, "data": rows}

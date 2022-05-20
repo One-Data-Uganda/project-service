@@ -6,7 +6,7 @@ from pydantic import AnyHttpUrl, BaseSettings, HttpUrl, PostgresDsn, RedisDsn, v
 class Settings(BaseSettings):
     CONFIG_TYPE: str = "prod"
     DEPLOYMENT: str = "one-data"
-    APPLICATION_NAME: str = "country-service"
+    APPLICATION_NAME: str = "project-service"
     API_V1_STR: str = "/v1"
     SECRET_KEY: str = "e2538f0f708d8bbb6ee5fcca22ec1887df34fe06530b31010bd3a71989ae8690"
     # 60 minutes * 24 hours * 8 days = 8 days

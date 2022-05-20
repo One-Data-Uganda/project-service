@@ -5,9 +5,9 @@ from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.api import deps
-from app.core.logger import log  # noqa
+from app.core.logger import TimedRoute, log  # noqa
 
-router = APIRouter()
+router = APIRouter(route_class=TimedRoute)
 
 
 @router.post("/", response_model=schemas.CountryDocumentResponse)

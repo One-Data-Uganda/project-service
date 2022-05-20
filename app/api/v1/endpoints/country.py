@@ -8,9 +8,9 @@ from sqlalchemy.orm import Session
 
 from app import crud, schemas
 from app.api import deps
-from app.core.logger import log  # noqa
+from app.core.logger import TimedRoute, log  # noqa
 
-router = APIRouter()
+router = APIRouter(route_class=TimedRoute)
 
 
 @router.post("/", response_model=schemas.Country)
@@ -31,7 +31,7 @@ async def create_country(
 
     await cache.hset("country", country.id, json.dumps(country.to_dict()))
 
-    return country
+    return {"success": True, "data": country}
 
 
 @router.get("/{id}", response_model=schemas.Country)
@@ -43,13 +43,13 @@ async def get_country(
     """Get country by ID."""
     r = await cache.hget("country", id)
     if r:
-        return json.loads(r)
+        return {"success": True, "data": json.loads(r)}
 
     r = crud.country.get(db, id)
     if not r:
         raise HTTPException(status_code=401, detail="Country not found")
 
-    return r
+    return {"success": True, "data": r}
 
 
 @router.put("/{id}", response_model=schemas.Country)
@@ -70,7 +70,7 @@ async def update_country(
 
     await cache.hset("country", country.id, json.dumps(country.to_dict()))
 
-    return country
+    return {"success": True, "data": country}
 
 
 @router.delete("/{id}", response_model=schemas.Country)
@@ -90,7 +90,7 @@ async def delete_country(
 
     await cache.hdel("country", id)
 
-    return country
+    return {"success": True, "data": country}
 
 
 @router.get("/", response_model=List[schemas.Country])
@@ -102,4 +102,4 @@ async def list_countries(
     """
     rows = crud.country.get_multi(db, limit=1000)
 
-    return rows
+    return {"success": True, "data": rows}

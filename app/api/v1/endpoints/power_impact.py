@@ -25,7 +25,7 @@ async def create_power_impact(
             status_code=400, detail="Power Impact with this ID already exists"
         )
 
-    return power_impact
+    return {"success": True, "data": power_impact}
 
 
 @router.get("/{id}", response_model=schemas.PowerImpactResponse)
@@ -38,7 +38,7 @@ async def get_power_impact(
     if not r:
         raise HTTPException(status_code=401, detail="Power Impact not found")
 
-    return r
+    return {"success": True, "data": r}
 
 
 @router.put("/{id}", response_model=schemas.PowerImpactResponse)
@@ -58,7 +58,7 @@ async def update_power_impact(
         db=db, db_obj=power_impact, obj_in=power_impact_in
     )
 
-    return power_impact
+    return {"success": True, "data": power_impact}
 
 
 @router.delete("/{id}", response_model=schemas.PowerImpactResponse)
@@ -75,7 +75,7 @@ async def delete_power_impact(
 
     power_impact = crud.power_impact.remove(db=db, id=id)
 
-    return power_impact
+    return {"success": True, "data": power_impact}
 
 
 @router.get("/", response_model=schemas.PowerImpactListResponse)
@@ -87,4 +87,4 @@ async def list_power_impacts(
     """
     rows = crud.power_impact.get_multi(db, limit=1000)
 
-    return rows
+    return {"success": True, "data": rows}
