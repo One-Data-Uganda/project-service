@@ -63,6 +63,8 @@ class Project(Base, SerializerMixin):
     )
     type = Column(Text)
     name = Column(Text)
+    short_name = Column(Text)
+    brief_description = Column(Text)
     description = Column(Text)
     size = Column(Float)
     investment = Column(Float)
@@ -88,14 +90,16 @@ class Project(Base, SerializerMixin):
     current_activities = Column(Text)
     next_activities = Column(Text)
     outstanding_activities = Column(Text)
-    status_id = Column(ForeignKey("status.id", ondelete="CASCADE", onupdate="CASCADE"))
+    status_id = Column(
+        ForeignKey("status.id", ondelete="RESTRICT", onupdate="RESTRICT")
+    )
     sponsor_type_id = Column(
-        ForeignKey("sponsor_type.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("sponsor_type.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     reference_code = Column(Text)
     manager = Column(Text)
     development_type_id = Column(
-        ForeignKey("development_type.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("development_type.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     development_model = Column(Text)
     percentage_public = Column(Float)
@@ -131,7 +135,7 @@ class ProjectRegion(Base, SerializerMixin):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     project_id = Column(
-        ForeignKey("project.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("project.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     region_id = Column(Text)
 
@@ -141,7 +145,7 @@ class ProjectCountry(Base, SerializerMixin):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     project_id = Column(
-        ForeignKey("project.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("project.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     country_id = Column(Text)
 
@@ -169,9 +173,9 @@ class ProjectType(Base, SerializerMixin):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     project_id = Column(
-        ForeignKey("project.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("project.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
-    type_id = Column(ForeignKey("ptype.id", ondelete="CASCADE", onupdate="CASCADE"))
+    type_id = Column(ForeignKey("ptype.id", ondelete="RESTRICT", onupdate="RESTRICT"))
 
 
 class EnergyResource(Base, SerializerMixin):
@@ -190,7 +194,7 @@ class TechnologyType(Base, SerializerMixin):
         UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
     )
     technology_id = Column(
-        ForeignKey("technology.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("technology.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     name = Column(Text)
 
@@ -228,9 +232,9 @@ class PowerWaterService(Base, SerializerMixin):
     __tablename__ = "power_water_service"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    power_id = Column(ForeignKey("power.id", ondelete="CASCADE", onupdate="CASCADE"))
+    power_id = Column(ForeignKey("power.id", ondelete="RESTRICT", onupdate="RESTRICT"))
     water_service_id = Column(
-        ForeignKey("water_service.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("water_service.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     is_primary = Column(Boolean, server_default=text("false"))
 
@@ -248,9 +252,9 @@ class PowerPowerCustomer(Base, SerializerMixin):
     __tablename__ = "power_power_customer"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    power_id = Column(ForeignKey("power.id", ondelete="CASCADE", onupdate="CASCADE"))
+    power_id = Column(ForeignKey("power.id", ondelete="RESTRICT", onupdate="RESTRICT"))
     power_customer_id = Column(
-        ForeignKey("power_customer.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("power_customer.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     is_primary = Column(Boolean, server_default=text("false"))
 
@@ -259,9 +263,9 @@ class PowerEnergyResource(Base, SerializerMixin):
     __tablename__ = "power_energy_resource"
 
     id = Column(Integer, primary_key=True, autoincrement=True)
-    power_id = Column(ForeignKey("power.id", ondelete="CASCADE", onupdate="CASCADE"))
+    power_id = Column(ForeignKey("power.id", ondelete="RESTRICT", onupdate="RESTRICT"))
     energy_resource_id = Column(
-        ForeignKey("energy_resource.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("energy_resource.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     is_primary = Column(Boolean, server_default=text("false"))
 
@@ -304,41 +308,75 @@ class Power(Base, SerializerMixin):
     picture_source = Column(Text)
     sponsor_id = Column(UUID(as_uuid=True))
     sponsor_name = Column(Text)
-    full_name = Column(Text)
-    short_name = Column(Text)
     capacity_id = Column(
-        ForeignKey("capacity.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("capacity.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     size = Column(Float)
-    description = Column(Text)
     energy_resource_id = Column(
-        ForeignKey("energy_resource.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("energy_resource.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     technology_id = Column(
-        ForeignKey("technology.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("technology.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     technology_type_id = Column(
-        ForeignKey("technology_type.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("technology_type.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     other_technologies = Column(Text)
     waterbody_names = Column(Text)
     scheme = Column(Text)
     design_components = Column(Text)
-    unit_id = Column(ForeignKey("unit.id", ondelete="CASCADE", onupdate="CASCADE"))
+    unit_id = Column(ForeignKey("unit.id", ondelete="RESTRICT", onupdate="RESTRICT"))
+    northings = Column(Text)
+    eastings = Column(Text)
     average_length = Column(Float)
     average_width = Column(Float)
-    off_taker_id = Column(
-        ForeignKey("off_taker.id", ondelete="CASCADE", onupdate="CASCADE")
-    )
-    statutory_permits = Column(Text)
-    ppa_status_id = Column(
-        ForeignKey("ppa_status.id", ondelete="CASCADE", onupdate="CASCADE")
-    )
-    ppa_status_grid_id = Column(
-        ForeignKey("ppa_status.id", ondelete="CASCADE", onupdate="CASCADE")
-    )
     data_shareable_public = Column(Boolean, server_default=text("false"))
     data_shareable_local = Column(Boolean, server_default=text("false"))
+    main_service_id = Column(
+        ForeignKey("water_service.id", ondelete="RESTRICT", onupdate="RESTRICT")
+    )
+    other_service_ids = Column(Text)
+    other_services = Column(Text)
+    off_taker_id = Column(
+        ForeignKey("off_taker.id", ondelete="RESTRICT", onupdate="RESTRICT")
+    )
+    statutory_permits = Column(Text)
+    statutory_licences = Column(Text)
+    statutory_agreements = Column(Text)
+    power_customer_id = Column(
+        ForeignKey("power_customer.id", ondelete="RESTRICT", onupdate="RESTRICT")
+    )
+    other_customer_ids = Column(Text)
+    other_customers = Column(Text)
+    revenue_source_id = Column(
+        ForeignKey("water_service.id", ondelete="RESTRICT", onupdate="RESTRICT")
+    )
+    ppa_status_id = Column(
+        ForeignKey("ppa_status.id", ondelete="RESTRICT", onupdate="RESTRICT")
+    )
+    ppa_status_grid_id = Column(
+        ForeignKey("ppa_status.id", ondelete="RESTRICT", onupdate="RESTRICT")
+    )
+    ppa_period = Column(Integer)
+    outstanding_activities = Column(Text)
+    environmental_impacts = Column(Text)
+    related_projects = Column(Text)
+
+
+class PowerDecision(Base, SerializerMixin):
+    __tablename__ = "power_decision"
+
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    commencement_date = Column(Date)
+    client_approval_date = Column(Date)
+    planning_date = Column(Date)
+    equity_finance_date = Column(Date)
+    debt_finance_date = Column(Date)
+    technical_assistance_date = Column(Date)
+    financial_close_date = Column(Date)
+    construction_start_date = Column(Date)
+    commissioning_date = Column(Date)
+    commercial_operations_date = Column(Date)
 
 
 class ProjectData(Base, SerializerMixin):
@@ -375,7 +413,7 @@ class ProjectData(Base, SerializerMixin):
     overhead_crane = Column(Float)
     turbine_type = Column(Text)
     turbine_capacity_id = Column(
-        ForeignKey("capacity.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("capacity.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     turbine_numbers = Column(Integer)
     turbine_capacity = Column(Float)
@@ -398,7 +436,7 @@ class ProjectDocument(Base, SerializerMixin):
         UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
     )
     project_id = Column(
-        ForeignKey("project.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("project.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     document_type = Column(Text)
     name = Column(Text)
@@ -409,10 +447,10 @@ class ProjectSponsorType(Base, SerializerMixin):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     sponsor_id = Column(
-        ForeignKey("sponsor.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("sponsor.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     sponsor_type_id = Column(
-        ForeignKey("sponsor_type.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("sponsor_type.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
 
 
@@ -421,7 +459,7 @@ class SponsorCountry(Base, SerializerMixin):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     sponsor_id = Column(
-        ForeignKey("sponsor.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("sponsor.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     country_id = Column(Text)
 
@@ -431,7 +469,7 @@ class SponsorSectorIndustry(Base, SerializerMixin):
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     sponsor_id = Column(
-        ForeignKey("sponsor.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("sponsor.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     sector_industry_id = Column(Text)
     is_primary = Column(Boolean, server_default=text("false"))
@@ -444,7 +482,7 @@ class SponsorDocument(Base, SerializerMixin):
         UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
     )
     sponsor_id = Column(
-        ForeignKey("sponsor.id", ondelete="CASCADE", onupdate="CASCADE")
+        ForeignKey("sponsor.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     document_type = Column(Text)
     name = Column(Text)
@@ -577,7 +615,6 @@ class ProjectInvestment(Base, SerializerMixin):
     grant_needing_mobilization = Column(Float)
     total_mobilized = Column(Float)
     total_needing_mobilization = Column(Float)
-    date_financial_close = Column(Date)
 
 
 class ProjectPartner(Base, SerializerMixin):
@@ -590,3 +627,120 @@ class ProjectPartner(Base, SerializerMixin):
     implementation_partners = Column(Text)
     institutional_partners = Column(Text)
     stakeholders = Column(Text)
+
+
+class ProjectLegal(Base, SerializerMixin):
+    __tablename__ = "project_legal"
+
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    sponsor_status = Column(Text)
+    permits_status = Column(Text)
+    licenses_status = Column(Text)
+    statutory_status = Column(Text)
+    jv_status = Column(Text)
+    sector_policies = Column(Text)
+    sector_laws = Column(Text)
+
+
+class ProductService(Base, SerializerMixin):
+    __tablename__ = "product_service"
+
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
+    name = Column(Text)
+
+
+class ProductCustomer(Base, SerializerMixin):
+    __tablename__ = "product_customer"
+
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
+    name = Column(Text)
+
+
+class PowerProduct(Base, SerializerMixin):
+    __tablename__ = "power_product"
+
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    product_service_id = Column(
+        ForeignKey("product_service.id", ondelete="RESTRICT", onupdate="RESTRICT")
+    )
+    other_services = Column(Text)
+    product_unit_id = Column(Text)
+    annual_output = Column(Float)
+    annual_demand = Column(Float)
+
+
+class FinancialPerformance(Base, SerializerMixin):
+    __tablename__ = "financial_performance"
+
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    main_revenue_sources = Column(Text)
+    other_revenue_sources = Column(Text)
+    ppa_period = Column(Integer)
+    average_annual_output = Column(Float)
+    tariff_price = Column(Float)
+    average_annual_revenue = Column(Float)
+    total_revenue = Column(Float)
+    capital_investment = Column(Float)
+    capital_cost_percentage = Column(Float)
+    payback_period = Column(Integer)
+    npv = Column(Float)
+    average_annual_costs = Column(Float)
+    average_annual_expenses = Column(Float)
+    total_annual_costs = Column(Float)
+    applicable_cost_period = Column(Integer)
+    total_costs_period = Column(Integer)
+    total_net_revenue = Column(Float)
+    average_annual_net_revenue = Column(Float)
+    key_model_results = Column(Text)
+
+
+class RiskManagement(Base, SerializerMixin):
+    __tablename__ = "risk_management"
+
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    summary = Column(Text)
+    current_partners = Column(Text)
+    prospective_partners = Column(Text)
+    product_types = Column(Text)
+    budget_amount = Column(Float)
+    budget_amount_mobilized = Column(Float)
+    budget_amount_needed = Column(Float)
+    amount = Column(Float)
+    guarantees = Column(Text)
+    guarantee_types = Column(Text)
+    current_guarantee_issuance = Column(Text)
+    prospective_guarantee_issuance = Column(Text)
+    required_guarantee_amount = Column(Float)
+    outstanding_guarantee_amount = Column(Float)
+    guarantees_documentation = Column(Text)
+    government_support = Column(Text)
+    direct_government_support = Column(Text)
+    direct_government_value = Column(Float)
+    indirect_government_support = Column(Text)
+    indirect_government_value = Column(Float)
+
+
+class ProjectContact(Base, SerializerMixin):
+    __tablename__ = "project_contact"
+
+    id = Column(UUID(as_uuid=True), primary_key=True)
+    project_contact = Column(Text)
+    project_address = Column(Text)
+    project_postal = Column(Text)
+    project_email = Column(Text)
+    project_telephone = Column(Text)
+    project_website = Column(Text)
+    project_nin = Column(Text)
+    project_nin_validate = Column(Boolean, server_default=text("false"))
+    general_contact = Column(Text)
+    general_address = Column(Text)
+    general_postal = Column(Text)
+    general_email = Column(Text)
+    general_telephone = Column(Text)
+    general_website = Column(Text)
+    general_nin = Column(Text)
+    general_nin_validate = Column(Boolean, server_default=text("false"))
