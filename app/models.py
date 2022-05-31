@@ -383,6 +383,7 @@ class ProjectData(Base, SerializerMixin):
     __tablename__ = "project_data"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    weir_classification = Column(Text)
     height = Column(Text)
     size_class = Column(Text)
     hazard_potential = Column(Text)
@@ -402,6 +403,7 @@ class ProjectData(Base, SerializerMixin):
     spillway_free_board = Column(Float)
     spillway_discharge_capacity = Column(Float)
     penstocks_type = Column(Text)
+    penstocks_length = Column(Float)
     penstocks_diameter = Column(Float)
     penstocks_velocity = Column(Float)
     penstocks_thickness = Column(Float)
@@ -415,6 +417,7 @@ class ProjectData(Base, SerializerMixin):
     turbine_capacity_id = Column(
         ForeignKey("capacity.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
+    turbine_unit_size = Column(Float)
     turbine_numbers = Column(Integer)
     turbine_capacity = Column(Float)
     turbine_efficiency = Column(Float)
@@ -424,6 +427,8 @@ class ProjectData(Base, SerializerMixin):
     alternator_voltage = Column(Float)
     substation_power_output = Column(Float)
     substation_voltage = Column(Float)
+    share_data_public = Column(Boolean)
+    share_data = Column(Boolean)
 
 
 class ProjectDocument(Base, SerializerMixin):
@@ -491,9 +496,7 @@ class SponsorDocument(Base, SerializerMixin):
 class Sponsor(Base, SerializerMixin):
     __tablename__ = "sponsor"
 
-    id = Column(
-        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
-    )
+    id = Column(UUID(as_uuid=True), primary_key=True)
     name = Column(Text)
     other_sponsors = Column(Text)
     shareholders = Column(Text)
@@ -514,6 +517,13 @@ class Sponsor(Base, SerializerMixin):
     contact_email = Column(Text)
     contact_telephone = Column(Text)
     contact_website = Column(Text)
+    sponsor_types = Column(Text)
+    countries = Column(Text)
+    other_countries = Column(Text)
+    sector_industry_id = Column(Text)
+    other_sectors = Column(Text)
+
+    sponsor_type = relationship("SponsorType")
 
 
 class ProjectTeam(Base, SerializerMixin):
@@ -597,7 +607,7 @@ class ProjectInvestment(Base, SerializerMixin):
     required_equity_amount = Column(Float)
     equity_mobilized = Column(Float)
     equity_needed = Column(Float)
-    required_debt_amount = Column(Text)
+    required_debt_amount = Column(Float)
     current_lenders = Column(Text)
     prospective_lenders = Column(Text)
     loan_type = Column(Text)
@@ -671,6 +681,14 @@ class PowerProduct(Base, SerializerMixin):
     product_unit_id = Column(Text)
     annual_output = Column(Float)
     annual_demand = Column(Float)
+    primary_customer_id = Column(
+        ForeignKey("power_customer.id", ondelete="RESTRICT", onupdate="RESTRICT")
+    )
+    other_customers = Column(Text)
+    other_customer_desc = Column(Text)
+
+    product_service = relationship("ProductService")
+    primary_customer = relationship("PowerCustomer")
 
 
 class FinancialPerformance(Base, SerializerMixin):
