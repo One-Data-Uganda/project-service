@@ -129,6 +129,7 @@ class Project(Base, SerializerMixin):
     award_criteria = Column(Text)
     comparative_advantage = Column(Text)
     economic_contributions = Column(Text)
+    image_stamp = Column(Float)
 
 
 class ProjectRegion(Base, SerializerMixin):
