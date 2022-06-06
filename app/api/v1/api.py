@@ -6,6 +6,7 @@ from app.api.v1.endpoints import (
     power_schedule,
     project,
     project_data,
+    project_document,
     project_investment,
     project_market,
     project_team,
@@ -25,6 +26,9 @@ api_router.include_router(
 api_router.include_router(project.router, prefix="/project", tags=["project"])
 api_router.include_router(
     project_data.router, prefix="/project-data", tags=["project data"]
+)
+api_router.include_router(
+    project_document.router, prefix="/project-document", tags=["project document"]
 )
 api_router.include_router(
     project_investment.router, prefix="/project-investment", tags=["project investment"]

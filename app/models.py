@@ -436,7 +436,13 @@ class ProjectData(Base, SerializerMixin):
 class ProjectDocument(Base, SerializerMixin):
     __tablename__ = "project_document"
     __table_args__ = (
-        Index("project_document_unique", "project_id", "document_type", unique=True),
+        Index(
+            "project_document_unique",
+            "project_id",
+            "name",
+            "document_type",
+            unique=True,
+        ),
     )
 
     id = Column(
@@ -445,8 +451,11 @@ class ProjectDocument(Base, SerializerMixin):
     project_id = Column(
         ForeignKey("project.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
+    section = Column(Text)
     document_type = Column(Text)
     name = Column(Text)
+    mimetype = Column(Text)
+    size = Column(Integer)
 
 
 class ProjectSponsorType(Base, SerializerMixin):
@@ -524,8 +533,6 @@ class Sponsor(Base, SerializerMixin):
     other_countries = Column(Text)
     sector_industry_id = Column(Text)
     other_sectors = Column(Text)
-
-    sponsor_type = relationship("SponsorType")
 
 
 class ProjectTeam(Base, SerializerMixin):

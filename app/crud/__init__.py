@@ -23,6 +23,7 @@ from app.schemas.project_team import ProjectTeamCreate, ProjectTeamUpdate
 from app.schemas.sponsor import SponsorCreate, SponsorUpdate
 
 from .base import CRUDBase
+from .crud_project_document import project_document  # noqa:F401
 
 power = CRUDBase[Power, PowerCreate, PowerUpdate](Power)
 project = CRUDBase[Project, ProjectCreate, ProjectUpdate](Project)
