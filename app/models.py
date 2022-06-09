@@ -61,6 +61,7 @@ class Project(Base, SerializerMixin):
     id = Column(
         UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
     )
+    account_id = Column(UUID(as_uuid=True))
     featured = Column(Integer, server_default=text("0"))
     type = Column(Text)
     name = Column(Text)
