@@ -75,11 +75,13 @@ class Project(Base, SerializerMixin):
     sector_group_id = Column(Text)
     sector_division_id = Column(Text)
     sector_id = Column(Text)
+    segment = Column(Text)
     technology = Column(Text)
     status = Column(Text)
     commencement_date = Column(Date)
     proposed_completion_date = Column(Date)
     current_stage = Column(Text)
+    completed_stage = Column(Text)
     next_stages = Column(Text)
     estimated_cost = Column(Float)
     contact_information = Column(Text)
@@ -311,6 +313,7 @@ class Power(Base, SerializerMixin):
     picture_source = Column(Text)
     sponsor_id = Column(UUID(as_uuid=True))
     sponsor_name = Column(Text)
+    capacity_mw = Column(Float)
     capacity_id = Column(
         ForeignKey("capacity.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
@@ -318,6 +321,7 @@ class Power(Base, SerializerMixin):
     energy_resource_id = Column(
         ForeignKey("energy_resource.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
+    other_resources = Column(Text)
     technology_id = Column(
         ForeignKey("technology.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
@@ -608,6 +612,7 @@ class ProjectInvestment(Base, SerializerMixin):
     __tablename__ = "project_investment"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    investment_strategy = Column(Text)
     total_cost = Column(Float)
     required_investment = Column(Text)
     shareholder_structure = Column(Text)
