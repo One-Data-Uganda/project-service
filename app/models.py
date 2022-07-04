@@ -335,6 +335,8 @@ class Power(Base, SerializerMixin):
     unit_id = Column(ForeignKey("unit.id", ondelete="RESTRICT", onupdate="RESTRICT"))
     northings = Column(Text)
     eastings = Column(Text)
+    northings_intake = Column(Text)
+    eastings_intake = Column(Text)
     average_length = Column(Float)
     average_width = Column(Float)
     data_shareable_public = Column(Boolean, server_default=text("false"))
