@@ -85,11 +85,11 @@ class Settings(BaseSettings):
 
     JAEGER_HOST: Optional[str] = None
 
-    POSTGRES_SERVER: str = "country-db"
-    POSTGRES_USER: str = "one_country"
-    POSTGRES_PASSWORD: str = "one_country"
+    POSTGRES_SERVER: str = "project-db"
+    POSTGRES_USER: str = "one_project"
+    POSTGRES_PASSWORD: str = "one_project"
     POSTGRES_PORT_5432_TCP_PORT: str = "5432"
-    POSTGRES_DB: str = "one_country"
+    POSTGRES_DB: str = "one_project"
     SQLALCHEMY_DATABASE_URI: Optional[PostgresDsn] = None
 
     @validator("SQLALCHEMY_DATABASE_URI", pre=True)

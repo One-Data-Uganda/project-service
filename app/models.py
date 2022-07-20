@@ -516,6 +516,7 @@ class Sponsor(Base, SerializerMixin):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     name = Column(Text)
+    short_name = Column(Text)
     other_sponsors = Column(Text)
     shareholders = Column(Text)
     background = Column(Text)
@@ -540,6 +541,8 @@ class Sponsor(Base, SerializerMixin):
     other_countries = Column(Text)
     sector_industry_id = Column(Text)
     other_sectors = Column(Text)
+    capital_required = Column(Float)
+    capital_available = Column(Float)
 
 
 class ProjectTeam(Base, SerializerMixin):
