@@ -418,6 +418,7 @@ class ProjectData(Base, SerializerMixin):
     penstocks_thickness = Column(Float)
     penstocks_number = Column(Float)
     installation_method = Column(Text)
+    power_house_floor = Column(Float)
     upstream_control = Column(Text)
     inlet_control = Column(Text)
     outlet_control = Column(Text)
@@ -438,6 +439,9 @@ class ProjectData(Base, SerializerMixin):
     substation_voltage = Column(Float)
     share_data_public = Column(Boolean)
     share_data = Column(Boolean)
+    head_gross = Column(Float)
+    head_net = Column(Float)
+    head_classification = Column(Text)
 
 
 class ProjectDocument(Base, SerializerMixin):
