@@ -632,7 +632,7 @@ class ProjectInvestment(Base, SerializerMixin):
     id = Column(UUID(as_uuid=True), primary_key=True)
     investment_strategy = Column(Text)
     total_cost = Column(Float)
-    required_investment = Column(Text)
+    required_investment = Column(Float)
     shareholder_structure = Column(Text)
     equity_investors = Column(Text)
     equity_partners = Column(Text)
