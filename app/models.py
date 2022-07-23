@@ -10,7 +10,7 @@ from sqlalchemy import (
     Text,
     text,
 )
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
 from sqlalchemy.orm import relationship  # noqa:F401
 from sqlalchemy_serializer import SerializerMixin
 
@@ -71,6 +71,8 @@ class Project(Base, SerializerMixin):
     size = Column(Float)
     investment = Column(Float)
     country_id = Column(Text)
+    other_countries = Column(ARRAY(Text()))
+    development_status = Column(Text)
     sector_industry_id = Column(Text)
     sector_group_id = Column(Text)
     sector_division_id = Column(Text)
@@ -80,6 +82,7 @@ class Project(Base, SerializerMixin):
     status = Column(Text)
     commencement_date = Column(Date)
     proposed_completion_date = Column(Date)
+    proposed_completion_year = Column(Integer)
     current_stage = Column(Text)
     completed_stage = Column(Text)
     next_stages = Column(Text)
@@ -321,14 +324,14 @@ class Power(Base, SerializerMixin):
     energy_resource_id = Column(
         ForeignKey("energy_resource.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
-    other_resources = Column(Text)
+    other_resources = Column(ARRAY(Text()))
     technology_id = Column(
         ForeignKey("technology.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
     technology_type_id = Column(
         ForeignKey("technology_type.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
-    other_technologies = Column(Text)
+    other_technologies = Column(ARRAY(Text()))
     waterbody_names = Column(Text)
     scheme = Column(Text)
     design_components = Column(Text)
@@ -344,7 +347,7 @@ class Power(Base, SerializerMixin):
     main_service_id = Column(
         ForeignKey("water_service.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
-    other_service_ids = Column(Text)
+    other_service_ids = Column(ARRAY(Text()))
     other_services = Column(Text)
     off_taker_id = Column(
         ForeignKey("off_taker.id", ondelete="RESTRICT", onupdate="RESTRICT")
@@ -355,11 +358,12 @@ class Power(Base, SerializerMixin):
     power_customer_id = Column(
         ForeignKey("power_customer.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
-    other_customer_ids = Column(Text)
+    other_customer_ids = Column(ARRAY(Text()))
     other_customers = Column(Text)
     revenue_source_id = Column(
         ForeignKey("water_service.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
+    other_revenue_sources = Column(Text)
     ppa_status_id = Column(
         ForeignKey("ppa_status.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
@@ -370,6 +374,7 @@ class Power(Base, SerializerMixin):
     outstanding_activities = Column(Text)
     environmental_impacts = Column(Text)
     related_projects = Column(Text)
+    investment_description = Column(Text)
 
 
 class PowerDecision(Base, SerializerMixin):
@@ -543,11 +548,11 @@ class Sponsor(Base, SerializerMixin):
     contact_email = Column(Text)
     contact_telephone = Column(Text)
     contact_website = Column(Text)
-    sponsor_types = Column(Text)
-    countries = Column(Text)
-    other_countries = Column(Text)
+    sponsor_types = Column(ARRAY(Text()))
+    countries = Column(ARRAY(Text()))
+    other_countries = Column(ARRAY(Text()))
     sector_industry_id = Column(Text)
-    other_sectors = Column(Text)
+    other_sectors = Column(ARRAY(Text()))
     capital_required = Column(Float)
     capital_available = Column(Float)
 
@@ -639,7 +644,7 @@ class ProjectInvestment(Base, SerializerMixin):
     current_lenders = Column(Text)
     prospective_lenders = Column(Text)
     loan_type = Column(Text)
-    other_loan_types = Column(Text)
+    other_loan_types = Column(ARRAY(Text()))
     other_loan_description = Column(Text)
     loan_amount = Column(Float)
     loan_mobilized = Column(Float)
@@ -705,14 +710,14 @@ class PowerProduct(Base, SerializerMixin):
     product_service_id = Column(
         ForeignKey("product_service.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
-    other_services = Column(Text)
+    other_services = Column(ARRAY(Text()))
     product_unit_id = Column(Text)
     annual_output = Column(Float)
     annual_demand = Column(Float)
     primary_customer_id = Column(
         ForeignKey("power_customer.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
-    other_customers = Column(Text)
+    other_customers = Column(ARRAY(Text()))
     other_customer_desc = Column(Text)
 
     product_service = relationship("ProductService")
