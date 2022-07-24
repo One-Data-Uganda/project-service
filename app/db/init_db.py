@@ -7,9 +7,9 @@ from sqlalchemy.orm import Session
 from sqlalchemy.schema import DropTable
 
 from app import models
+from app.core.logger import log
 from app.db import base  # noqa: F401
 from app.db.session import engine
-from app.logger import log
 
 
 @compiles(DropTable, "postgresql")
