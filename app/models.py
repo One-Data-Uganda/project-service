@@ -7,16 +7,28 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    MetaData,
     Text,
     text,
 )
 from sqlalchemy.dialects.postgresql import ARRAY, UUID
+from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship  # noqa:F401
 from sqlalchemy_serializer import SerializerMixin
 
-from app.db.base_class import Base
+# from app.db.base_class import Base
 
-metadata = Base.metadata
+meta = MetaData(
+    naming_convention={
+        "ix": "%(column_0_label)s_idx",
+        "uq": "%(table_name)s_%(column_0_name)s_unique",
+        "ck": "%(table_name)s_%(constraint_name)s_check",
+        "fk": "%(table_name)s_%(column_0_name)s_fkey",
+        "pk": "%(table_name)s_pkey",
+    }
+)
+
+Base = declarative_base(metadata=meta)
 
 
 class Capacity(Base, SerializerMixin):
@@ -311,6 +323,7 @@ class Power(Base, SerializerMixin):
     )
     developer = Column(Text)
     notice = Column(Text)
+    picture_title = Column(Text)
     picture_source = Column(Text)
     sponsor_id = Column(UUID(as_uuid=True))
     sponsor_name = Column(Text)
@@ -471,6 +484,7 @@ class ProjectDocument(Base, SerializerMixin):
     section = Column(Text)
     document_type = Column(Text)
     name = Column(Text)
+    source = Column(Text)
     mimetype = Column(Text)
     size = Column(Integer)
 
