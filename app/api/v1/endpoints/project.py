@@ -78,6 +78,19 @@ async def delete_project(
     return {"success": True, "data": project}
 
 
+@router.post("/filter")
+async def filter_projects(
+    payload: schemas.ProjectFilterModel,
+    db: Session = Depends(deps.get_db),
+) -> Any:
+    """
+    Retrieve projects.
+    """
+    rows = crud.project.filter(db, payload)
+
+    return {"success": True, "data": rows}
+
+
 @router.get("/", response_model=schemas.ProjectListResponse)
 async def list_projects(
     db: Session = Depends(deps.get_db),

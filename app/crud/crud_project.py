@@ -83,5 +83,57 @@ class CRUDProject(
             "extension": document.extension or "pdf",
         }
 
+    def filter(self, db: Session, payload):
+        projects = db.query(models.Project)
+
+        total_count = projects.count()
+
+        if payload.name:
+            projects = projects.filter(models.Project.name.ilike(f"%{payload.name}%"))
+
+        if payload.sectors:
+            projects = projects.filter(
+                models.Project.sector_industry_id.in_(payload.sectors)
+            )
+
+        if payload.countries:
+            projects = projects.filter(models.Project.country_id.in_(payload.countries))
+
+        if payload.status_id:
+            projects = projects.filter(models.Project.status_id == payload.status_id)
+
+        if payload.account_id:
+            projects = projects.filter(models.Project.account_id == payload.account_id)
+
+        if payload.project_status:
+            subquery = (
+                db.query(models.ProjectStatus.project_id)
+                .filter(models.ProjectStatus.status)
+                .in_(payload.project_status)
+                .subquery()
+            )
+            projects = projects.filter(models.Project.id.in_(subquery.c.project_id))
+
+        r_projects = (
+            projects.order_by(models.Project.featured.desc(), models.Project.name.asc())
+            .limit(payload.pagesize)
+            .offset(payload.offset)
+        )
+
+        projects = []
+        for project in r_projects.all():
+            log.debug(project)
+            projects.append(
+                {
+                    "project": project,
+                    # "country": models.Country.query.get(project.country_id),
+                    "power": db.get(models.Power, project.id),
+                    "investment": db.get(models.ProjectInvestment, project.id),
+                    # "sector": db.get(models.Sector, project.sector_id),
+                }
+            )
+
+        return {"total_count": total_count, "projects": projects}
+
 
 project = CRUDProject(models.Project)

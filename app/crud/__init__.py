@@ -27,6 +27,7 @@ from app.models import (
     ProjectPartner,
     ProjectRegion,
     ProjectSponsorType,
+    ProjectStatus,
     ProjectTeam,
     ProjectType,
     RiskManagement,
@@ -60,6 +61,7 @@ from app.schemas.project_investment import (
 from app.schemas.project_legal import ProjectLegalCreate, ProjectLegalUpdate
 from app.schemas.project_market import ProjectMarketCreate, ProjectMarketUpdate
 from app.schemas.project_partner import ProjectPartnerCreate, ProjectPartnerUpdate
+from app.schemas.project_status import ProjectStatusCreate, ProjectStatusUpdate
 from app.schemas.project_team import ProjectTeamCreate, ProjectTeamUpdate
 from app.schemas.risk_management import RiskManagementCreate, RiskManagementUpdate
 from app.schemas.simple_table import SimpleTableCreate, SimpleTableUpdate
@@ -141,6 +143,9 @@ project_region = CRUDBase[ProjectRegion, SimpleTableCreate, SimpleTableUpdate](
 project_sponsor_type = CRUDBase[
     ProjectSponsorType, SimpleTableCreate, SimpleTableUpdate
 ](ProjectSponsorType)
+project_status = CRUDBase[ProjectStatus, ProjectStatusCreate, ProjectStatusUpdate](
+    ProjectStatus
+)
 project_team = CRUDBase[ProjectTeam, ProjectTeamCreate, ProjectTeamUpdate](ProjectTeam)
 project_type = CRUDBase[ProjectType, SimpleTableCreate, SimpleTableUpdate](ProjectType)
 risk_management = CRUDBase[RiskManagement, RiskManagementCreate, RiskManagementUpdate](

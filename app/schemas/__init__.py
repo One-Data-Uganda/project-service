@@ -15,6 +15,7 @@ from .project_investment import *  # noqa
 from .project_legal import *  # noqa
 from .project_market import *  # noqa
 from .project_partner import *  # noqa
+from .project_status import *  # noqa
 from .project_team import *  # noqa
 from .risk_management import *  # noqa
 from .simple_table import *  # noqa

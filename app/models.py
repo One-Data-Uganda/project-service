@@ -3,6 +3,7 @@ from sqlalchemy import (
     Boolean,
     Column,
     Date,
+    DateTime,
     Float,
     ForeignKey,
     Index,
@@ -63,6 +64,21 @@ class DevelopmentModel(Base, SerializerMixin):
         UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
     )
     name = Column(Text)
+
+
+class ProjectStatus(Base, SerializerMixin):
+    __tablename__ = "project_status"
+
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
+    project_id = Column(
+        ForeignKey("project.id", ondelete="RESTRICT", onupdate="CASCADE")
+    )
+    status = Column(Text)
+    user_id = Column(UUID(as_uuid=True))
+    name = Column(Text)
+    created_at = Column(DateTime, server_default=text("now()"))
 
 
 class Project(Base, SerializerMixin):
@@ -151,8 +167,18 @@ class Project(Base, SerializerMixin):
     needs_advisory = Column(Boolean, server_default=text("false"))
     needs_supply = Column(Boolean, server_default=text("false"))
     needs_contractor = Column(Boolean, server_default=text("false"))
+    current_status_id = Column(
+        ForeignKey(
+            "project_status.id", ondelete="RESTRICT", onupdate="CASCADE", use_alter=True
+        )
+    )
+    created_at = Column(DateTime, server_default=text("now()"))
+    verified_at = Column(DateTime)
 
     status = relationship("Status")
+    project_status = relationship(
+        "ProjectStatus", primaryjoin="Project.current_status_id==ProjectStatus.id"
+    )
     development_type = relationship("DevelopmentType")
     sponsor_type = relationship("SponsorType", lazy="selectin")
 

@@ -32,7 +32,7 @@ async def create_project_team(
 
 @router.get("/{id}", response_model=schemas.ProjectTeamResponse)
 async def get_project_team(
-    id: str,
+    id: uuid.UUID,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """Get project_team by ID."""

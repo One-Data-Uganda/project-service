@@ -4,12 +4,14 @@ from typing import List, Optional
 
 from pydantic import BaseModel
 
+from .project_status import ProjectStatus
 from .simple_table import SimpleTable
 
 
 # Shared properties
 class ProjectBase(BaseModel):
     id: Optional[uuid.UUID]
+    current_status_id: Optional[uuid.UUID]
     who: Optional[str]
     account_id: Optional[uuid.UUID]
     featured: Optional[int]
@@ -101,6 +103,7 @@ class ProjectInDBBase(ProjectBase):
     status: Optional[SimpleTable]
     development_type: Optional[SimpleTable]
     sponsor_type: Optional[SimpleTable]
+    project_status: Optional[ProjectStatus]
 
     class Config:
         orm_mode = True
@@ -124,3 +127,14 @@ class ProjectResponse(BaseModel):
 class ProjectListResponse(BaseModel):
     success: bool
     data: Optional[List[Project]]
+
+
+class ProjectFilterModel(BaseModel):
+    name: Optional[str]
+    sectors: Optional[List[str]]
+    countries: Optional[List[str]]
+    status_id: Optional[int]
+    pagesize: Optional[int]
+    offset: Optional[int]
+    account_id: Optional[uuid.UUID]
+    project_status: Optional[List[str]]
