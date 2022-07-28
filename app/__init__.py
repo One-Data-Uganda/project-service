@@ -1,7 +1,11 @@
+import datetime
+import uuid
 from typing import Union
 
 import fastapi_plugins
 import sentry_sdk
+from datatables.search_methods import SEARCH_METHODS
+from dateutil.parser import parse as date_parse
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.routing import APIRoute
@@ -24,6 +28,29 @@ from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 from app.api.v1.api import api_router
 from app.core.config import settings
 from app.core.logger import log
+
+
+def date_range_filter(expr, value):
+    v_from, v_to = value.split("|")
+    v_from = (
+        date_parse(v_from, dayfirst=True).strftime("%Y-%m-%d 00:00:00")
+        if v_from != ""
+        else datetime.datetime.now - datetime.interval(days=3650)
+    )
+    v_to = (
+        date_parse(v_to, dayfirst=True).strftime("%Y-%m-%d 23:59:59")
+        if v_to != ""
+        else datetime.datetime.now()
+    )
+    return expr.between(v_from, v_to)
+
+
+def uuid_filter(expr, value):
+    return expr == uuid.UUID(value)
+
+
+SEARCH_METHODS["date_range_filter"] = date_range_filter
+SEARCH_METHODS["uuid_filter"] = uuid_filter
 
 sentry_sdk.init(
     dsn=settings.SENTRY_DSN,

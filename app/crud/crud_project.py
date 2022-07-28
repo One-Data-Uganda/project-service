@@ -3,45 +3,63 @@ import uuid
 from typing import Any
 
 import aiofiles
+from datatables import ColumnDT, DataTables
 from fastapi import UploadFile
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.orm import Session
 
-from app import models
 from app.core.config import settings
 from app.core.logger import log  # noqa:F401
 from app.crud.base import CRUDBase
+from app.models import (
+    FinancialPerformance,
+    Power,
+    PowerDecision,
+    PowerImpact,
+    PowerProduct,
+    PowerSchedule,
+    Project,
+    ProjectContact,
+    ProjectData,
+    ProjectInvestment,
+    ProjectLegal,
+    ProjectMarket,
+    ProjectPartner,
+    ProjectStatus,
+    ProjectTeam,
+    RiskManagement,
+    Sponsor,
+)
 from app.schemas.project import ProjectCreate, ProjectUpdate
 
 
 class CRUDProject(
     CRUDBase[
-        models.Project,
+        Project,
         ProjectCreate,
         ProjectUpdate,
     ]
 ):
-    def create(self, db: Session, obj_in: ProjectCreate) -> models.Project:
+    def create(self, db: Session, obj_in: ProjectCreate) -> Project:
         r = super().create(db=db, obj_in=obj_in)
 
         # Now we create all the other records
         for tbl in [
-            models.FinancialPerformance,
-            models.Power,
-            models.PowerDecision,
-            models.PowerImpact,
-            models.PowerProduct,
-            models.PowerSchedule,
-            models.ProjectContact,
-            models.ProjectData,
-            models.ProjectInvestment,
-            models.ProjectInvestment,
-            models.ProjectLegal,
-            models.ProjectMarket,
-            models.ProjectPartner,
-            models.ProjectTeam,
-            models.RiskManagement,
-            models.Sponsor,
+            FinancialPerformance,
+            Power,
+            PowerDecision,
+            PowerImpact,
+            PowerProduct,
+            PowerSchedule,
+            ProjectContact,
+            ProjectData,
+            ProjectInvestment,
+            ProjectLegal,
+            ProjectMarket,
+            ProjectPartner,
+            ProjectTeam,
+            RiskManagement,
+            Sponsor,
         ]:
             stmt = insert(tbl).values(id=r.id)
             stmt = stmt.on_conflict_do_nothing()
@@ -84,38 +102,36 @@ class CRUDProject(
         }
 
     def filter(self, db: Session, payload):
-        projects = db.query(models.Project)
+        projects = db.query(Project)
 
         total_count = projects.count()
 
         if payload.name:
-            projects = projects.filter(models.Project.name.ilike(f"%{payload.name}%"))
+            projects = projects.filter(Project.name.ilike(f"%{payload.name}%"))
 
         if payload.sectors:
-            projects = projects.filter(
-                models.Project.sector_industry_id.in_(payload.sectors)
-            )
+            projects = projects.filter(Project.sector_industry_id.in_(payload.sectors))
 
         if payload.countries:
-            projects = projects.filter(models.Project.country_id.in_(payload.countries))
+            projects = projects.filter(Project.country_id.in_(payload.countries))
 
         if payload.status_id:
-            projects = projects.filter(models.Project.status_id == payload.status_id)
+            projects = projects.filter(Project.status_id == payload.status_id)
 
         if payload.account_id:
-            projects = projects.filter(models.Project.account_id == payload.account_id)
+            projects = projects.filter(Project.account_id == payload.account_id)
 
         if payload.project_status:
             subquery = (
-                db.query(models.ProjectStatus.project_id)
-                .filter(models.ProjectStatus.status)
+                db.query(ProjectStatus.project_id)
+                .filter(ProjectStatus.status)
                 .in_(payload.project_status)
                 .subquery()
             )
-            projects = projects.filter(models.Project.id.in_(subquery.c.project_id))
+            projects = projects.filter(Project.id.in_(subquery.c.project_id))
 
         r_projects = (
-            projects.order_by(models.Project.featured.desc(), models.Project.name.asc())
+            projects.order_by(Project.featured.desc(), Project.name.asc())
             .limit(payload.pagesize)
             .offset(payload.offset)
         )
@@ -126,14 +142,102 @@ class CRUDProject(
             projects.append(
                 {
                     "project": project,
-                    # "country": models.Country.query.get(project.country_id),
-                    "power": db.get(models.Power, project.id),
-                    "investment": db.get(models.ProjectInvestment, project.id),
-                    # "sector": db.get(models.Sector, project.sector_id),
+                    # "country": Country.query.get(project.country_id),
+                    "power": db.get(Power, project.id),
+                    "investment": db.get(ProjectInvestment, project.id),
+                    # "sector": db.get(Sector, project.sector_id),
                 }
             )
 
         return {"total_count": total_count, "projects": projects}
 
+    # This returns a datatable compatible object
+    def json(self, db: Session, account_id: str, params: dict):
+        query = (
+            db.query()
+            .select_from(Project)
+            .join(ProjectStatus, Project.current_status_id == ProjectStatus.id)
+        )
 
-project = CRUDProject(models.Project)
+        if account_id:
+            query = query.filter(Project.account_id == account_id)
+
+            columns = [
+                ColumnDT(
+                    Project.created_at,
+                    mData="created_at",
+                    search_method="date_range_filter",
+                ),
+                ColumnDT(Project.name, mData="name"),
+                ColumnDT(Project.type, mData="type"),
+                ColumnDT(ProjectStatus.status, mData="status"),
+                ColumnDT(Project.status_id, mData="status_id"),
+                ColumnDT(Project.country_id, mData="country_id"),
+                ColumnDT(
+                    Project.needs_advisory,
+                    mData="needs_advisory",
+                    search_method="yadcf_autocomplete",
+                ),
+                ColumnDT(
+                    Project.needs_investment,
+                    mData="needs_investment",
+                    search_method="yadcf_autocomplete",
+                ),
+                ColumnDT(
+                    Project.needs_supply,
+                    mData="needs_supply",
+                    search_method="yadcf_autocomplete",
+                ),
+                ColumnDT(
+                    Project.needs_contractor,
+                    mData="needs_contractor",
+                    search_method="yadcf_autocomplete",
+                ),
+                ColumnDT(Project.country_id, mData="country"),
+                ColumnDT(Project.id, mData="id"),
+            ]
+        else:
+            columns = [
+                ColumnDT(
+                    Project.created_at,
+                    mData="created_at",
+                    search_method="date_range_filter",
+                ),
+                ColumnDT(Project.account_id, mData="account_id"),
+                ColumnDT(Project.name, mData="name"),
+                ColumnDT(Project.type, mData="type"),
+                ColumnDT(Project.country_id, mData="country_id"),
+                ColumnDT(ProjectStatus.status, mData="status"),
+                ColumnDT(Project.status_id, mData="status_id"),
+                ColumnDT(
+                    Project.needs_advisory,
+                    mData="needs_advisory",
+                    search_method="yadcf_autocomplete",
+                ),
+                ColumnDT(
+                    Project.needs_investment,
+                    mData="needs_investment",
+                    search_method="yadcf_autocomplete",
+                ),
+                ColumnDT(
+                    Project.needs_supply,
+                    mData="needs_supply",
+                    search_method="yadcf_autocomplete",
+                ),
+                ColumnDT(
+                    Project.needs_contractor,
+                    mData="needs_contractor",
+                    search_method="yadcf_autocomplete",
+                ),
+                ColumnDT(Project.country_id, mData="country"),
+                ColumnDT(Project.id, mData="id"),
+            ]
+
+        # instantiating a DataTable for the query and table needed
+        rowTable = DataTables(params, query, columns)
+
+        # returns what is needed by DataTable
+        return rowTable.output_result()
+
+
+project = CRUDProject(Project)

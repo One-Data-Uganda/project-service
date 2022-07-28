@@ -91,6 +91,17 @@ async def filter_projects(
     return {"success": True, "data": rows}
 
 
+@router.get("/{account_id}/json")
+async def project_json(
+    account_id: uuid.UUID,
+    params: dict,
+    db: Session = Depends(deps.get_db),
+) -> Any:
+    rows = crud.project.json(db, account_id=account_id, params=params)
+
+    return rows
+
+
 @router.get("/", response_model=schemas.ProjectListResponse)
 async def list_projects(
     db: Session = Depends(deps.get_db),
