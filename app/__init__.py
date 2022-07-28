@@ -1,7 +1,5 @@
-import json
 from typing import Union
 
-import aioredis
 import fastapi_plugins
 import sentry_sdk
 from fastapi import FastAPI
@@ -24,10 +22,8 @@ from starlette.status import HTTP_422_UNPROCESSABLE_ENTITY
 from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 
 from app.api.v1.api import api_router
-from app.core.celery_app import celery_app
 from app.core.config import settings
 from app.core.logger import log
-from app.db.session import SessionLocal
 
 sentry_sdk.init(
     dsn=settings.SENTRY_DSN,

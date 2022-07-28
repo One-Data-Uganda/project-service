@@ -1,12 +1,13 @@
+import uuid
 from typing import List, Optional
-from uuid import UUID
 
 from pydantic import BaseModel
 
 
 # Shared properties
 class ProjectMarketBase(BaseModel):
-    id: Optional[UUID]
+    id: Optional[uuid.UUID]
+    who: Optional[str]
     overview: Optional[str]
     economic_issues: Optional[str]
     energy_sector: Optional[str]

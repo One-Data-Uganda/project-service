@@ -1,3 +1,4 @@
+import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -15,6 +16,7 @@ async def create_project_data(
     project_data_in: schemas.ProjectDataCreate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
+
     """
     Create new project_data.
     """
@@ -22,7 +24,7 @@ async def create_project_data(
         project_data = crud.project_data.create(db=db, obj_in=project_data_in)
     except Exception:
         raise HTTPException(
-            status_code=400, detail="Project Data with this ID already exists"
+            status_code=400, detail="ProjectData with this ID already exists"
         )
 
     return {"success": True, "data": project_data}
@@ -33,26 +35,26 @@ async def get_project_data(
     id: str,
     db: Session = Depends(deps.get_db),
 ) -> Any:
-    """Get project data by ID."""
+    """Get project_data by ID."""
     r = crud.project_data.get(db, id)
     if not r:
-        raise HTTPException(status_code=401, detail="Project Data not found")
+        raise HTTPException(status_code=404, detail="ProjectData not found")
 
     return {"success": True, "data": r}
 
 
 @router.put("/{id}", response_model=schemas.ProjectDataResponse)
 async def update_project_data(
-    id: str,
+    id: uuid.UUID,
     project_data_in: schemas.ProjectDataUpdate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Update a project data.
+    Update a project_data.
     """
     project_data = crud.project_data.get(db=db, id=id)
     if not project_data:
-        raise HTTPException(status_code=404, detail="Project Data not found")
+        raise HTTPException(status_code=404, detail="ProjectData not found")
 
     project_data = crud.project_data.update(
         db=db, db_obj=project_data, obj_in=project_data_in
@@ -63,15 +65,15 @@ async def update_project_data(
 
 @router.delete("/{id}", response_model=schemas.ProjectDataResponse)
 async def delete_project_data(
-    id: str,
+    id: uuid.UUID,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Delete a project data.
+    Delete a project_data.
     """
     project_data = crud.project_data.get(db=db, id=id)
     if not project_data:
-        raise HTTPException(status_code=404, detail="Project Data not found")
+        raise HTTPException(status_code=404, detail="ProjectData not found")
 
     project_data = crud.project_data.remove(db=db, id=id)
 
@@ -83,7 +85,7 @@ async def list_project_datas(
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Retrieve project datas.
+    Retrieve project_datas.
     """
     rows = crud.project_data.get_multi(db, limit=1000)
 

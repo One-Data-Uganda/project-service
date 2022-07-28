@@ -7,7 +7,7 @@ from fastapi import UploadFile
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.core.logger import log
+from app.core.logger import log  # noqa:F401
 from app.crud.base import CRUDBase
 from app.models import ProjectDocument
 from app.schemas.project_document import ProjectDocumentCreate, ProjectDocumentUpdate
@@ -31,9 +31,6 @@ class CRUDProjectDocument(
             documents = documents.filter(ProjectDocument.section == section)
         if type:
             documents = documents.filter(ProjectDocument.document_type == type)
-
-        log.debug(type)
-        log.debug(documents)
 
         return documents.order_by(ProjectDocument.section).all()
 

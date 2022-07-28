@@ -47,7 +47,7 @@ async def get_country(
 
     r = crud.country.get(db, id)
     if not r:
-        raise HTTPException(status_code=401, detail="Country not found")
+        raise HTTPException(status_code=404, detail="Country not found")
 
     return {"success": True, "data": r}
 

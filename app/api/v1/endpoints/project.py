@@ -1,5 +1,5 @@
+import uuid
 from typing import Any
-from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -16,13 +16,13 @@ async def create_project(
     project_in: schemas.ProjectCreate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
+
     """
     Create new project.
     """
     try:
         project = crud.project.create(db=db, obj_in=project_in)
-    except Exception as e:
-        log.error(e, exc_info=True)
+    except Exception:
         raise HTTPException(
             status_code=400, detail="Project with this ID already exists"
         )
@@ -32,20 +32,20 @@ async def create_project(
 
 @router.get("/{id}", response_model=schemas.ProjectResponse)
 async def get_project(
-    id: UUID,
+    id: str,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """Get project by ID."""
     r = crud.project.get(db, id)
     if not r:
-        raise HTTPException(status_code=401, detail="Project not found")
+        raise HTTPException(status_code=404, detail="Project not found")
 
     return {"success": True, "data": r}
 
 
 @router.put("/{id}", response_model=schemas.ProjectResponse)
 async def update_project(
-    id: UUID,
+    id: uuid.UUID,
     project_in: schemas.ProjectUpdate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
@@ -63,7 +63,7 @@ async def update_project(
 
 @router.delete("/{id}", response_model=schemas.ProjectResponse)
 async def delete_project(
-    id: UUID,
+    id: uuid.UUID,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """

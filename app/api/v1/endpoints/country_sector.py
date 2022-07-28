@@ -36,7 +36,7 @@ async def get_country_sector(
     """Get country sector by ID."""
     r = crud.country_sector.get(db, id)
     if not r:
-        raise HTTPException(status_code=401, detail="Country Sector not found")
+        raise HTTPException(status_code=404, detail="Country Sector not found")
 
     return r
 

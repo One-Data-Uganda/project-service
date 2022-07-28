@@ -1,3 +1,4 @@
+import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -15,6 +16,7 @@ async def create_sponsor(
     sponsor_in: schemas.SponsorCreate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
+
     """
     Create new sponsor.
     """
@@ -36,14 +38,14 @@ async def get_sponsor(
     """Get sponsor by ID."""
     r = crud.sponsor.get(db, id)
     if not r:
-        raise HTTPException(status_code=401, detail="Sponsor not found")
+        raise HTTPException(status_code=404, detail="Sponsor not found")
 
     return {"success": True, "data": r}
 
 
 @router.put("/{id}", response_model=schemas.SponsorResponse)
 async def update_sponsor(
-    id: str,
+    id: uuid.UUID,
     sponsor_in: schemas.SponsorUpdate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
@@ -61,7 +63,7 @@ async def update_sponsor(
 
 @router.delete("/{id}", response_model=schemas.SponsorResponse)
 async def delete_sponsor(
-    id: str,
+    id: uuid.UUID,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """

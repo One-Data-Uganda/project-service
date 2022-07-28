@@ -71,6 +71,7 @@ class Project(Base, SerializerMixin):
     id = Column(
         UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
     )
+    who = Column(Text)
     account_id = Column(UUID(as_uuid=True))
     featured = Column(Integer, server_default=text("0"))
     type = Column(Text)
@@ -146,6 +147,14 @@ class Project(Base, SerializerMixin):
     comparative_advantage = Column(Text)
     economic_contributions = Column(Text)
     image_stamp = Column(Float)
+    needs_investment = Column(Boolean, server_default=text("false"))
+    needs_advisory = Column(Boolean, server_default=text("false"))
+    needs_supply = Column(Boolean, server_default=text("false"))
+    needs_contractor = Column(Boolean, server_default=text("false"))
+
+    status = relationship("Status")
+    development_type = relationship("DevelopmentType")
+    sponsor_type = relationship("SponsorType", lazy="selectin")
 
 
 class ProjectRegion(Base, SerializerMixin):
@@ -299,7 +308,7 @@ class PowerComponent(Base, SerializerMixin):
     eastings = Column(Text)
 
 
-class PPAstatus(Base, SerializerMixin):
+class PPAStatus(Base, SerializerMixin):
     __tablename__ = "ppa_status"
 
     id = Column(
@@ -321,6 +330,7 @@ class Power(Base, SerializerMixin):
     id = Column(
         UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
     )
+    who = Column(Text)
     developer = Column(Text)
     notice = Column(Text)
     picture_title = Column(Text)
@@ -387,11 +397,32 @@ class Power(Base, SerializerMixin):
     related_projects = Column(Text)
     investment_description = Column(Text)
 
+    unit = relationship("Unit")
+    off_taker = relationship("OffTaker")
+    capacity = relationship("Capacity")
+    technology = relationship("Technology")
+    technology_type = relationship("TechnologyType")
+    energy_resource = relationship("EnergyResource")
+    main_service = relationship(
+        "WaterService", primaryjoin="Power.main_service_id == WaterService.id"
+    )
+    power_customer = relationship("PowerCustomer")
+    revenue_source = relationship(
+        "WaterService", primaryjoin="Power.revenue_source_id == WaterService.id"
+    )
+    ppa_status = relationship(
+        "PPAStatus", primaryjoin="Power.ppa_status_id == PPAStatus.id"
+    )
+    ppa_status_grid = relationship(
+        "PPAStatus", primaryjoin="Power.ppa_status_grid_id == PPAStatus.id"
+    )
+
 
 class PowerDecision(Base, SerializerMixin):
     __tablename__ = "power_decision"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     commencement_date = Column(Date)
     client_approval_date = Column(Date)
     planning_date = Column(Date)
@@ -408,6 +439,7 @@ class ProjectData(Base, SerializerMixin):
     __tablename__ = "project_data"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     weir_classification = Column(Text)
     height = Column(Text)
     size_class = Column(Text)
@@ -478,6 +510,7 @@ class ProjectDocument(Base, SerializerMixin):
     id = Column(
         UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
     )
+    who = Column(Text)
     project_id = Column(
         ForeignKey("project.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
@@ -539,6 +572,7 @@ class Sponsor(Base, SerializerMixin):
     __tablename__ = "sponsor"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     name = Column(Text)
     short_name = Column(Text)
     other_sponsors = Column(Text)
@@ -573,6 +607,7 @@ class ProjectTeam(Base, SerializerMixin):
     __tablename__ = "project_team"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     manager = Column(Text)
     manager_background = Column(Text)
     has_board = Column(Boolean, server_default=text("false"))
@@ -591,6 +626,7 @@ class PowerSchedule(Base, SerializerMixin):
     __tablename__ = "power_schedule"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     planning_schedule = Column(Text)
     construction_schedule = Column(Text)
     startup_schedule = Column(Text)
@@ -604,6 +640,7 @@ class PowerImpact(Base, SerializerMixin):
     __tablename__ = "power_impact"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     description_environment = Column(Text)
     description_social = Column(Text)
     description_environment_impact = Column(Text)
@@ -621,6 +658,7 @@ class ProjectMarket(Base, SerializerMixin):
     __tablename__ = "project_market"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     overview = Column(Text)
     economic_issues = Column(Text)
     energy_sector = Column(Text)
@@ -642,6 +680,7 @@ class ProjectInvestment(Base, SerializerMixin):
     __tablename__ = "project_investment"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     investment_strategy = Column(Text)
     total_cost = Column(Float)
     required_investment = Column(Text)
@@ -677,6 +716,7 @@ class ProjectPartner(Base, SerializerMixin):
     __tablename__ = "project_partner"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     equity_partners = Column(Text)
     debt_partners = Column(Text)
     tehcnical_advisors = Column(Text)
@@ -689,6 +729,7 @@ class ProjectLegal(Base, SerializerMixin):
     __tablename__ = "project_legal"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     sponsor_status = Column(Text)
     permits_status = Column(Text)
     licenses_status = Column(Text)
@@ -720,6 +761,7 @@ class PowerProduct(Base, SerializerMixin):
     __tablename__ = "power_product"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     product_service_id = Column(
         ForeignKey("product_service.id", ondelete="RESTRICT", onupdate="RESTRICT")
     )
@@ -741,6 +783,7 @@ class FinancialPerformance(Base, SerializerMixin):
     __tablename__ = "financial_performance"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     main_revenue_sources = Column(Text)
     other_revenue_sources = Column(Text)
     ppa_period = Column(Integer)
@@ -770,6 +813,7 @@ class RiskManagement(Base, SerializerMixin):
     __tablename__ = "risk_management"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     summary = Column(Text)
     current_partners = Column(Text)
     prospective_partners = Column(Text)
@@ -797,6 +841,7 @@ class ProjectContact(Base, SerializerMixin):
     __tablename__ = "project_contact"
 
     id = Column(UUID(as_uuid=True), primary_key=True)
+    who = Column(Text)
     project_contact = Column(Text)
     project_address = Column(Text)
     project_postal = Column(Text)

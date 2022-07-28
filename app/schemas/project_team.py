@@ -1,12 +1,13 @@
+import uuid
 from typing import List, Optional
-from uuid import UUID
 
 from pydantic import BaseModel
 
 
 # Shared properties
 class ProjectTeamBase(BaseModel):
-    id: Optional[UUID]
+    id: Optional[uuid.UUID]
+    who: Optional[str]
     manager: Optional[str]
     manager_background: Optional[str]
     has_board: Optional[bool]

@@ -1,3 +1,4 @@
+import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -15,6 +16,7 @@ async def create_power_impact(
     power_impact_in: schemas.PowerImpactCreate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
+
     """
     Create new power_impact.
     """
@@ -22,7 +24,7 @@ async def create_power_impact(
         power_impact = crud.power_impact.create(db=db, obj_in=power_impact_in)
     except Exception:
         raise HTTPException(
-            status_code=400, detail="Power Impact with this ID already exists"
+            status_code=400, detail="PowerImpact with this ID already exists"
         )
 
     return {"success": True, "data": power_impact}
@@ -33,26 +35,26 @@ async def get_power_impact(
     id: str,
     db: Session = Depends(deps.get_db),
 ) -> Any:
-    """Get power impact by ID."""
+    """Get power_impact by ID."""
     r = crud.power_impact.get(db, id)
     if not r:
-        raise HTTPException(status_code=401, detail="Power Impact not found")
+        raise HTTPException(status_code=404, detail="PowerImpact not found")
 
     return {"success": True, "data": r}
 
 
 @router.put("/{id}", response_model=schemas.PowerImpactResponse)
 async def update_power_impact(
-    id: str,
+    id: uuid.UUID,
     power_impact_in: schemas.PowerImpactUpdate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Update a power impact.
+    Update a power_impact.
     """
     power_impact = crud.power_impact.get(db=db, id=id)
     if not power_impact:
-        raise HTTPException(status_code=404, detail="Power Impact not found")
+        raise HTTPException(status_code=404, detail="PowerImpact not found")
 
     power_impact = crud.power_impact.update(
         db=db, db_obj=power_impact, obj_in=power_impact_in
@@ -63,15 +65,15 @@ async def update_power_impact(
 
 @router.delete("/{id}", response_model=schemas.PowerImpactResponse)
 async def delete_power_impact(
-    id: str,
+    id: uuid.UUID,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Delete a power impact.
+    Delete a power_impact.
     """
     power_impact = crud.power_impact.get(db=db, id=id)
     if not power_impact:
-        raise HTTPException(status_code=404, detail="Power Impact not found")
+        raise HTTPException(status_code=404, detail="PowerImpact not found")
 
     power_impact = crud.power_impact.remove(db=db, id=id)
 
@@ -83,7 +85,7 @@ async def list_power_impacts(
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
-    Retrieve power impacts.
+    Retrieve power_impacts.
     """
     rows = crud.power_impact.get_multi(db, limit=1000)
 

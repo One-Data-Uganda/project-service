@@ -1,3 +1,4 @@
+import uuid
 from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException
@@ -15,6 +16,7 @@ async def create_power(
     power_in: schemas.PowerCreate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
+
     """
     Create new power.
     """
@@ -33,15 +35,17 @@ async def get_power(
 ) -> Any:
     """Get power by ID."""
     r = crud.power.get(db, id)
+
+    log.debug(r.to_dict())
     if not r:
-        raise HTTPException(status_code=401, detail="Power not found")
+        raise HTTPException(status_code=404, detail="Power not found")
 
     return {"success": True, "data": r}
 
 
 @router.put("/{id}", response_model=schemas.PowerResponse)
 async def update_power(
-    id: str,
+    id: uuid.UUID,
     power_in: schemas.PowerUpdate,
     db: Session = Depends(deps.get_db),
 ) -> Any:
@@ -59,7 +63,7 @@ async def update_power(
 
 @router.delete("/{id}", response_model=schemas.PowerResponse)
 async def delete_power(
-    id: str,
+    id: uuid.UUID,
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """

@@ -38,7 +38,7 @@ async def get_country_document(
     """Get country document by ID."""
     r = crud.country_document.get(db, id)
     if not r:
-        raise HTTPException(status_code=401, detail="Country Document not found")
+        raise HTTPException(status_code=404, detail="Country Document not found")
 
     return r
 

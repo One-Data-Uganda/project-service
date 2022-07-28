@@ -7,8 +7,10 @@ from pydantic import BaseModel
 # Shared properties
 class ProjectDocumentBase(BaseModel):
     id: Optional[uuid.UUID]
+    who: Optional[str]
     project_id: Optional[uuid.UUID]
     name: Optional[str]
+    source: Optional[str]
     document_type: Optional[str]
     section: Optional[str]
     mimetype: Optional[str]

@@ -1,12 +1,13 @@
+import uuid
 from typing import List, Optional
-from uuid import UUID
 
 from pydantic import BaseModel
 
 
 # Shared properties
 class PowerImpactBase(BaseModel):
-    id: Optional[UUID]
+    id: Optional[uuid.UUID]
+    who: Optional[str]
     description_environment: Optional[str]
     description_social: Optional[str]
     description_environment_impact: Optional[str]

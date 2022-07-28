@@ -1,13 +1,15 @@
+import uuid
 from typing import List, Optional
-from uuid import UUID
 
 from pydantic import BaseModel
 
 
 # Shared properties
 class SponsorBase(BaseModel):
-    id: Optional[UUID]
+    id: Optional[uuid.UUID]
+    who: Optional[str]
     name: Optional[str]
+    short_name: Optional[str]
     other_sponsors: Optional[str]
     shareholders: Optional[str]
     background: Optional[str]
@@ -27,6 +29,13 @@ class SponsorBase(BaseModel):
     contact_email: Optional[str]
     contact_telephone: Optional[str]
     contact_website: Optional[str]
+    sponsor_types: Optional[List[str]]
+    countries: Optional[List[str]]
+    other_countries: Optional[List[str]]
+    sector_industry_id: Optional[str]
+    other_sectors: Optional[List[str]]
+    capital_required: Optional[float]
+    capital_available: Optional[float]
 
 
 # Properties to receive via API on creation

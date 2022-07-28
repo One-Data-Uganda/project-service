@@ -1,17 +1,19 @@
+import uuid
 from typing import List, Optional
-from uuid import UUID
 
 from pydantic import BaseModel
 
 
 # Shared properties
 class PowerScheduleBase(BaseModel):
-    id: Optional[UUID]
+    id: Optional[uuid.UUID]
+    who: Optional[str]
     construction_schedule: Optional[str]
     startup_schedule: Optional[str]
     operations_schedule: Optional[str]
     expenditures: Optional[str]
     funding_schedule: Optional[str]
+    planning_schedule: Optional[str]
     regulatory_compliance: Optional[str]
 
 

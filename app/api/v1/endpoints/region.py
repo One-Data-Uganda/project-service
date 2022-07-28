@@ -36,7 +36,7 @@ async def get_project(
     """Get project by ID."""
     r = crud.project.get(db, id)
     if not r:
-        raise HTTPException(status_code=401, detail="Project not found")
+        raise HTTPException(status_code=404, detail="Project not found")
 
     return r
 

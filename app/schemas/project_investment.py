@@ -1,12 +1,14 @@
+import uuid
 from typing import List, Optional
-from uuid import UUID
 
 from pydantic import BaseModel
 
 
 # Shared properties
 class ProjectInvestmentBase(BaseModel):
-    id: Optional[UUID]
+    id: Optional[uuid.UUID]
+    who: Optional[str]
+    investment_strategy: Optional[str]
     total_cost: Optional[float]
     required_investment: Optional[str]
     shareholder_structure: Optional[str]
@@ -16,10 +18,25 @@ class ProjectInvestmentBase(BaseModel):
     required_equity_amount: Optional[float]
     equity_mobilized: Optional[float]
     equity_needed: Optional[float]
-    required_debt_amount: Optional[str]
+    required_debt_amount: Optional[float]
+    debt_description: Optional[str]
     current_lenders: Optional[str]
     prospective_lenders: Optional[str]
     loan_type: Optional[str]
+    other_loan_types: Optional[List[str]]
+    other_loan_description: Optional[str]
+    loan_amount: Optional[float]
+    loan_mobilized: Optional[float]
+    loan_needing_mobilization: Optional[float]
+    proposed_grant_amount: Optional[str]
+    grant_providers: Optional[str]
+    prospective_grant_providers: Optional[str]
+    grant_types: Optional[str]
+    grant_amount: Optional[float]
+    grant_mobilized: Optional[float]
+    grant_needing_mobilization: Optional[float]
+    total_mobilized: Optional[float]
+    total_needing_mobilization: Optional[float]
 
 
 # Properties to receive via API on creation

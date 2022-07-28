@@ -36,7 +36,7 @@ async def get_power_impact(
     """Get power impact by ID."""
     r = crud.power_impact.get(db, id)
     if not r:
-        raise HTTPException(status_code=401, detail="Power Impact not found")
+        raise HTTPException(status_code=404, detail="Power Impact not found")
 
     return r
 

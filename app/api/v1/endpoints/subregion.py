@@ -36,7 +36,7 @@ async def get_subregion(
     """Get subregion by ID."""
     r = crud.subregion.get(db, id)
     if not r:
-        raise HTTPException(status_code=401, detail="Subregion not found")
+        raise HTTPException(status_code=404, detail="Subregion not found")
 
     return r
 
