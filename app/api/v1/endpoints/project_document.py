@@ -1,5 +1,5 @@
 import uuid
-from typing import Any
+from typing import Any, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, UploadFile
 from sqlalchemy.orm import Session
@@ -19,6 +19,7 @@ async def create_project_document(
     section: str,
     mimetype: str,
     in_file: UploadFile,
+    source: Optional[str],
     db: Session = Depends(deps.get_db),
 ) -> Any:
     """
@@ -38,6 +39,7 @@ async def create_project_document(
         id=id,
         project_id=project_id,
         name=name,
+        source=source,
         document_type=document_type,
         section=section,
         size=f["size"],
