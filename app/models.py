@@ -32,6 +32,14 @@ meta = MetaData(
 Base = declarative_base(metadata=meta)
 
 
+class Country(Base, SerializerMixin):
+    __tablename__ = "country"
+
+    id = Column(Text, primary_key=True)
+    name = Column(Text)
+    calling_code = Column(Integer)
+
+
 class Capacity(Base, SerializerMixin):
     __tablename__ = "capacity"
 
@@ -485,6 +493,10 @@ class ProjectData(Base, SerializerMixin):
     spillway_length = Column(Float)
     spillway_free_board = Column(Float)
     spillway_discharge_capacity = Column(Float)
+    forebay_capacity = Column(Float)
+    forebay_length = Column(Float)
+    forebay_width = Column(Float)
+    forebay_depth = Column(Float)
     penstocks_type = Column(Text)
     penstocks_length = Column(Float)
     penstocks_diameter = Column(Float)
@@ -654,6 +666,7 @@ class PowerSchedule(Base, SerializerMixin):
     id = Column(UUID(as_uuid=True), primary_key=True)
     who = Column(Text)
     planning_schedule = Column(Text)
+    legal_consents = Column(Text)
     construction_schedule = Column(Text)
     startup_schedule = Column(Text)
     operations_schedule = Column(Text)
@@ -743,6 +756,8 @@ class ProjectPartner(Base, SerializerMixin):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     who = Column(Text)
+    equity_partners_list = Column(Text)
+    debt_partners_list = Column(Text)
     equity_partners = Column(Text)
     debt_partners = Column(Text)
     tehcnical_advisors = Column(Text)
@@ -763,6 +778,7 @@ class ProjectLegal(Base, SerializerMixin):
     jv_status = Column(Text)
     sector_policies = Column(Text)
     sector_laws = Column(Text)
+    sector_guidelines = Column(Text)
 
 
 class ProductService(Base, SerializerMixin):
@@ -800,6 +816,8 @@ class PowerProduct(Base, SerializerMixin):
     )
     other_customers = Column(ARRAY(Text()))
     other_customer_desc = Column(Text)
+    average_price = Column(Float)
+    average_output = Column(Float)
 
     product_service = relationship("ProductService")
     primary_customer = relationship("PowerCustomer")

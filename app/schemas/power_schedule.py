@@ -9,6 +9,7 @@ class PowerScheduleBase(BaseModel):
     id: Optional[uuid.UUID]
     who: Optional[str]
     construction_schedule: Optional[str]
+    legal_consents: Optional[str]
     startup_schedule: Optional[str]
     operations_schedule: Optional[str]
     expenditures: Optional[str]

@@ -8,6 +8,8 @@ from pydantic import BaseModel
 class ProjectPartnerBase(BaseModel):
     id: Optional[uuid.UUID]
     who: Optional[str]
+    equity_partners_list: Optional[str]
+    debt_partners_list: Optional[str]
     equity_partners: Optional[str]
     debt_partners: Optional[str]
     tehcnical_advisors: Optional[str]

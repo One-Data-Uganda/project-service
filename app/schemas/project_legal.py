@@ -15,6 +15,7 @@ class ProjectLegalBase(BaseModel):
     jv_status: Optional[str]
     sector_policies: Optional[str]
     sector_laws: Optional[str]
+    sector_guidelines: Optional[str]
 
 
 class ProjectLegalUpdate(ProjectLegalBase):

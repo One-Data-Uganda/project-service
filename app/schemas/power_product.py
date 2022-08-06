@@ -18,6 +18,8 @@ class PowerProductBase(BaseModel):
     primary_customer_id: Optional[uuid.UUID]
     other_customers: Optional[List[str]]
     other_customer_desc: Optional[str]
+    average_price: Optional[float]
+    average_output: Optional[float]
 
 
 class PowerProductUpdate(PowerProductBase):
