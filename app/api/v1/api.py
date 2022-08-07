@@ -33,6 +33,7 @@ from app.api.v1.endpoints import (
     project_sponsor_type,
     project_status,
     project_team,
+    project_team_person,
     project_type,
     risk_management,
     sponsor,
@@ -144,6 +145,11 @@ api_router.include_router(
 )
 api_router.include_router(
     project_team.router, prefix="/project-team", tags=["project-team"]
+)
+api_router.include_router(
+    project_team_person.router,
+    prefix="/project-team-person",
+    tags=["project-team-person"],
 )
 api_router.include_router(
     project_type.router, prefix="/project-type", tags=["project-type"]

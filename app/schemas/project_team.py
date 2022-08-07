@@ -8,9 +8,9 @@ from pydantic import BaseModel
 class ProjectTeamBase(BaseModel):
     id: Optional[uuid.UUID]
     who: Optional[str]
-    manager: Optional[str]
-    manager_background: Optional[str]
     has_board: Optional[bool]
+    has_manager: Optional[bool]
+    has_team: Optional[bool]
     number_directors: Optional[int]
     board_directors: Optional[str]
     management_oficers: Optional[str]
@@ -18,8 +18,6 @@ class ProjectTeamBase(BaseModel):
     management_targets: Optional[str]
     management_agreement: Optional[str]
     personnel_practices: Optional[str]
-    manager_nin: Optional[str]
-    nin_validate: Optional[bool]
 
 
 # Properties to receive via API on creation

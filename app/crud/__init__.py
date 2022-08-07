@@ -70,6 +70,7 @@ from app.schemas.sponsor import SponsorCreate, SponsorUpdate
 from .base import CRUDBase
 from .crud_project import project  # noqa
 from .crud_project_document import project_document  # noqa
+from .crud_project_team_person import project_team_person  # noqa
 
 capacity = CRUDBase[Capacity, CapacityCreate, CapacityUpdate](Capacity)
 development_model = CRUDBase[DevelopmentModel, SimpleTableCreate, SimpleTableUpdate](

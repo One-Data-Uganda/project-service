@@ -89,6 +89,25 @@ class ProjectStatus(Base, SerializerMixin):
     created_at = Column(DateTime, server_default=text("now()"))
 
 
+class ProjectTeamPerson(Base, SerializerMixin):
+    __tablename__ = "project_team_person"
+
+    id = Column(
+        UUID(as_uuid=True), primary_key=True, server_default=text("gen_random_uuid()")
+    )
+    who = Column(Text)
+    project_id = Column(
+        ForeignKey("project.id", ondelete="RESTRICT", onupdate="CASCADE")
+    )
+    classification = Column(Text)
+    name = Column(Text)
+    position = Column(Text)
+    qualifications = Column(Text)
+    bio = Column(Text)
+    picture = Column(UUID(as_uuid=True))
+    cv = Column(UUID(as_uuid=True))
+
+
 class Project(Base, SerializerMixin):
     __tablename__ = "project"
 
@@ -646,9 +665,9 @@ class ProjectTeam(Base, SerializerMixin):
 
     id = Column(UUID(as_uuid=True), primary_key=True)
     who = Column(Text)
-    manager = Column(Text)
-    manager_background = Column(Text)
     has_board = Column(Boolean, server_default=text("false"))
+    has_manager = Column(Boolean, server_default=text("false"))
+    has_team = Column(Boolean, server_default=text("false"))
     number_directors = Column(Integer)
     board_directors = Column(Text)
     management_oficers = Column(Text)
